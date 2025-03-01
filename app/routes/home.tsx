@@ -1,3 +1,3 @@
-export default function Home() {
-  return <div>Hello World</div>;
-}
+export const loader = async () => {
+  return { ok: true, message: "hello world, try searching on `/api/download`" };
+};
