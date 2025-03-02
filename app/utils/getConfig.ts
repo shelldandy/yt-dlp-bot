@@ -3,6 +3,7 @@ import "dotenv/config";
 export interface Config {
   token: string;
   serverUrl: string;
+  preferredVideoExtension?: string;
 }
 
 export function getConfig(): Config {
