@@ -14,3 +14,14 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const downloadUrl = downloader({ url: q });
   return { ok: true, q, chatId, downloadUrl };
 };
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const update = await request.json();
+  // Handle messages
+  if (update.message?.text) {
+    const chatId = update.message.chat.id;
+    const text = update.message.text;
+    // Send reply
+    console.log(`Sending reply to chat ${chatId}, text: ${text}`);
+  }
+};

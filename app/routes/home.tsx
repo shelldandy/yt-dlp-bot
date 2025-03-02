@@ -1,9 +1,21 @@
-const message = `hello world, try searching on '/api/download'`;
+import type { Route } from "./+types/home";
+import { getConfig } from "~/utils/getConfig";
+
+export const meta = [{ title: "yt-dlp telegram-bot" }];
 
 export const loader = async () => {
-  return { ok: true, message };
+  const config = getConfig();
+  return {
+    ok: true,
+    message: `hello world, try searching on '/api/download'`,
+    config,
+  };
 };
 
-export default function Home() {
-  return message;
+export default function Home({ loaderData }: Route.ComponentProps) {
+  return (
+    <pre>
+      <code>{JSON.stringify(loaderData, null, 2)}</code>
+    </pre>
+  );
 }
