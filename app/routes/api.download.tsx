@@ -7,7 +7,7 @@ import { getInfo, download } from "~/utils/downloader";
 const handleDownload = async (url: string, chatId: number) => {
   const bot = getBot();
   const message = await download(url);
-  bot.sendMessage(chatId, `\`\`\`${JSON.stringify(message, null, 2)}\`\`\``);
+  bot.sendMessage(chatId, `${message}`);
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
