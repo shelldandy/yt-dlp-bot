@@ -1,20 +1,13 @@
 import type { Route } from "./+types/api.download";
 import { data } from "react-router";
 import type { Update } from "node-telegram-bot-api";
-import youtubedl from "youtube-dl-exec";
-import type { Flags, Payload } from "youtube-dl-exec";
-import { getConfig } from "~/utils/getConfig";
 import { getBot } from "~/utils/getBot";
+import { getInfo, download } from "~/utils/downloader";
 
-const getInfo = (url: string, flags: Flags): Promise<Payload | string> =>
-  youtubedl(url, { dumpSingleJson: true, ...flags });
-
-export const download = (url: string) => {
-  const config = getConfig();
-  return youtubedl.exec(url, {
-    output: `${config.mediaDir}/%(title)s.%(ext)s`,
-    recodeVideo: config.preferredVideoExtension,
-  });
+const handleDownload = async (url: string, chatId: number) => {
+  const bot = getBot();
+  const message = await download(url);
+  bot.sendMessage(chatId, `\`\`\`${JSON.stringify(message, null, 2)}\`\`\``);
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
@@ -32,8 +25,6 @@ export const action = async ({ request }: Route.ActionArgs) => {
   }
 
   update = await request.json();
-
-  // Handle messages
   if (update.message?.text && update.message?.chat?.id) {
     const chatId = update.message.chat.id;
     const url = update.message.text;
@@ -43,11 +34,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
     if (typeof info === "string") return { status: "ERROR", message: info };
 
-    bot.sendMessage(
-      chatId,
-      `Video: ${info.title} | Resolution ${info.resolution}`
-    );
-    //await download(url);
+    handleDownload(url, chatId);
 
     return {
       status: "OK",
